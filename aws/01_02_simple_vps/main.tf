@@ -3,7 +3,10 @@ provider "aws" {
 }
 
 data "aws_ami" "ubuntu" {
+  #En lugar de devolver un listado, devuelve un unico valor
   most_recent = true
+
+  #Filtros en la búsqueda en el nombre de la AMI
 
   filter {
     name   = "name"
@@ -20,6 +23,7 @@ data "aws_ami" "ubuntu" {
     values = ["hvm"]
   }
 
+  #Id del owner de la AMI, el owner también da el ID de la AMI en su pagina web
   owners = ["099720109477"] # Canonical
 }
 
