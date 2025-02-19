@@ -6,7 +6,7 @@ provider "aws" {
 
 
 
-# Data source para obtener la AMI de Ubuntu más reciente
+# Data source para obtener la AMI de Ubuntu más reciente ##################################################
 data "aws_ami" "ubuntu" {
   most_recent = true # Se selecciona la AMI más reciente que cumpla los filtros
 
@@ -35,7 +35,7 @@ data "aws_ami" "ubuntu" {
 
 
 
-# Declaración de variables para parametrizar la configuración
+# Declaración de variables para parametrizar la configuración ##################################################
 
 # Ruta al archivo que contiene la clave pública SSH
 variable "ssh_key_path" {
@@ -58,13 +58,13 @@ variable "project_name" {
   default = "profe"
 }
 
-# Recurso para crear un key pair en AWS que servirá para acceder a la instancia por SSH
+# Recurso para crear un key pair en AWS que servirá para acceder a la instancia por SSH ##################################################
 resource "aws_key_pair" "deployer" {
   key_name   = "deployer-key-ubuntu-${var.project_name}" # Nombre del key pair que incluye el nombre del proyecto
   public_key = file(var.ssh_key_path) # Lee el contenido del archivo de la clave pública
 }
 
-# Recurso para crear un grupo de seguridad que permita el acceso SSH a la instancia
+# Recurso para crear un grupo de seguridad que permita el acceso SSH a la instancia ##################################################
 resource "aws_security_group" "allow_ssh" {
   name        = "allow_ssh-${var.project_name}" # Nombre del grupo de seguridad
   description = "Allow SSH inbound traffic"       # Descripción del grupo
@@ -93,7 +93,7 @@ resource "aws_security_group" "allow_ssh" {
   }
 }
 
-# Recurso para crear una instancia EC2 en AWS
+# Recurso para crear una instancia EC2 en AWS ##################################################
 resource "aws_instance" "web" {
   ami           = data.aws_ami.ubuntu.id      # Utiliza la AMI de Ubuntu obtenida del data source
   instance_type = "t3.micro"                   # Tipo de instancia (adecuada para pruebas o cargas ligeras)
@@ -116,6 +116,7 @@ resource "aws_instance" "web" {
     user        = "ubuntu"                                  # Usuario para conectarse a la instancia (por defecto en Ubuntu)
     host        = self.public_ip                            # Utiliza la IP pública de la instancia
     private_key = file(var.ssh_key_private_path)            # Lee la clave privada desde el archivo especificado
+    #agent      = true                                      # Permite usar el agente SSH   
   }
 
   # Provisioner que se ejecuta de forma remota en la instancia EC2
@@ -126,7 +127,7 @@ resource "aws_instance" "web" {
   }
 }
 
-# Outputs para mostrar información relevante tras el despliegue
+# Outputs para mostrar información relevante tras el despliegue ##################################################
 
 # Muestra la dirección IP pública de la instancia EC2
 output "ip_instance" {
