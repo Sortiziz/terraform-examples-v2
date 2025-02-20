@@ -81,17 +81,16 @@ resource "aws_s3_bucket_public_access_block" "public_access" {
   restrict_public_buckets = true
 }
 
-# ya no es necesaria una tabla de dynamodb para disponer de un backend remoto en s3
-#resource "aws_dynamodb_table" "terraform_locks" {
-#  name         = "${var.project_name}-${var.client_name}-up-and-running-locks"
-#  billing_mode = "PAY_PER_REQUEST"
-#  hash_key     = "LockID"
-#
-#  attribute {
-#    name = "LockID"
-#    type = "S"
-#  }
-#}
+resource "aws_dynamodb_table" "terraform_locks" {
+  name         = "${var.project_name}-${var.client_name}-up-and-running-locks"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "LockID"
+
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
+}
 
 
 output "s3_bucket_arn" {
@@ -99,9 +98,8 @@ output "s3_bucket_arn" {
   description = "The ARN of the S3 bucket"
 }
 
-# ya no es necesaria una tabla de dynamodb para disponer de un backend remoto en s3
-#output "dynamodb_table_name" {
-#  value       = aws_dynamodb_table.terraform_locks.name
-#  description = "The name of the DynamoDB table"
-#}
+output "dynamodb_table_name" {
+  value       = aws_dynamodb_table.terraform_locks.name
+  description = "The name of the DynamoDB table"
+}
 
